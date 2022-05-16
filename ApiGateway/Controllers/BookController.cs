@@ -1,7 +1,7 @@
 using Cache.Services.CacheHandler;
 using Cache;
 using Microsoft.AspNetCore.Mvc;
-using DataAccess.WebApiServices;
+using ExternalServices.WebApiServices;
 
 namespace ApiGateway.Controllers
 {
@@ -20,7 +20,7 @@ namespace ApiGateway.Controllers
         [HttpGet("{id}")]
         public async Task<string?> Get(int id)
         {
-            return await _cacheHandler.GetAsync(new CacheKey<int>("", "").Create(id),
+            return await _cacheHandler.GetAsync(new CacheKey().Create(id.ToString()),
                 async () => { return await _taaghcheService.GetById(id); },
                 TimeSpan.FromDays(2));
 

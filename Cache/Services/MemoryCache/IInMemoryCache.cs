@@ -4,7 +4,7 @@ namespace Cache.Services.MemoryCache
 {
     public interface IInMemoryCache
     {
-        byte[] Get(string key);
+        object Get(string key);
         void Set<T>(string key,T value, MemoryCacheEntryOptions options);
     }
 }

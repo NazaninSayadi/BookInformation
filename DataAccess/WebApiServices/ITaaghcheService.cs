@@ -1,4 +1,4 @@
-﻿namespace DataAccess.WebApiServices
+﻿namespace ExternalServices.WebApiServices
 {
     public interface ITaaghcheService
     {

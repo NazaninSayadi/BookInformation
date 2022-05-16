@@ -1,13 +1,13 @@
 ﻿namespace Cache
 {
-    public class CacheKey<T>
+    public class CacheKey
     {
-        public CacheKey(string prefix, string suffix)
+        public CacheKey(string prefix = "", string suffix = "")
         {
             Prefix = prefix;
             Suffix = suffix;
         }
-        public string Create(T key)
+        public string Create(string key)
         {
             return $"{Prefix}_{key}_{Suffix}";
         }

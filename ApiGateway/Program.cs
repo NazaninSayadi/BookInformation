@@ -1,7 +1,7 @@
 using Cache.Services.CacheHandler;
 using Cache.Services.MemoryCache;
 using Cache.Services.Redis;
-using DataAccess.WebApiServices;
+using ExternalServices.WebApiServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -21,14 +21,15 @@ namespace Cache.Services.CacheHandler
         public async Task<string> GetAsync(string key, Func<Task<string>> retrieveFromDataStore, TimeSpan ttl)
         {
             var memcachedItem = _memoryCache.Get(key);
-            if (memcachedItem is { } && memcachedItem.Length > 0)
-                return JsonSerializer.Deserialize<string>(new ReadOnlySpan<byte>(memcachedItem));
+            if (memcachedItem is not null)
+                return (string)memcachedItem;
 
             var redisCachedItem = await _redisCache.Get(key);
-            if (redisCachedItem is { } && redisCachedItem.Length > 0)
+            if (redisCachedItem?.Length > 0)
             {
-                _memoryCache.Set(key, redisCachedItem, new MemoryCacheEntryOptions { AbsoluteExpiration = DateTime.Now.AddDays(ttl.Days), Size = 1 });
-                return JsonSerializer.Deserialize<string>(new ReadOnlySpan<byte>(redisCachedItem));
+                var result = JsonSerializer.Deserialize<string>(new ReadOnlySpan<byte>(redisCachedItem));
+                _memoryCache.Set(key, result, new MemoryCacheEntryOptions { AbsoluteExpiration = DateTime.Now.AddDays(ttl.Days), Size = 1 });
+                return result;
             }
 
             var data = await retrieveFromDataStore();
@@ -36,7 +37,7 @@ namespace Cache.Services.CacheHandler
 
             var serializedData = JsonSerializer.SerializeToUtf8Bytes(data);
 
-            _memoryCache.Set(key, serializedData, new MemoryCacheEntryOptions { AbsoluteExpiration = DateTime.Now.AddDays(ttl.Days), Size = 1 });
+            _memoryCache.Set(key, data, new MemoryCacheEntryOptions { AbsoluteExpiration = DateTime.Now.AddDays(ttl.Days), Size = 1 });
             await _redisCache.Set(key, serializedData, new DistributedCacheEntryOptions { AbsoluteExpiration = DateTime.Now.AddDays(ttl.Days) });
 
             return data;

@@ -11,9 +11,9 @@ namespace Cache.Services.MemoryCache
             _memoryCache = memoryCache;
         }
 
-        public byte[] Get(string key)
+        public object Get(string key)
         {
-            return _memoryCache.TryGetValue(key, out byte[] cachedItem) ? cachedItem : default;
+            return _memoryCache.TryGetValue(key, out string cachedItem) ? cachedItem : default;
         }
         public void Set<T>(string key, T value, MemoryCacheEntryOptions options)
         {
